@@ -1,7 +1,6 @@
 # MSP430_prendeLed_asm
 ;---------------------------------------------------------------
 #include "msp430g2231.h"                     ; #define controlled include file
-#define X R4
 
         NAME    main                    ; module name
 
@@ -26,50 +25,27 @@ P1BIOS  CLR.B &P1SEL
 P2BIOS  CLR.B &P2SEL
         MOV.B #0FFh,&P2DIR
         CLR.B &P2OUT
-        CLR.B X
-        MOV.B #GIE,SR
-        nop
+        MOV.B #GIE + CPUOFF,SR
+       nop
 ;----------------------------------------------------------------------
-COMPARA CMP.B #0,X
-        JEQ APAGA
-        
-        BIS.B #BIT6+BIT0,&P1OUT
-        CALL #T50ms
-        BIC.B #BIT6+BIT0,&P1OUT
-        CALL #T50ms
-        JMP COMPARA
-
-APAGA   BIC.B #BIT6+BIT0,&P1OUT
-        JMP COMPARA
-
-
-
 BOTON   CALL #T30ms
         BIT.B #BIT3,&P1IN
-        JNZ CASA
-        CMP.B #1,X
-        JHS CERO
-        INC.B X
-CASA    BIC.B #BIT3,&P1IFG
+        JNZ ENCE
+        
+      
+        
+       
+       XOR.B #BIT0+BIT6,&P1OUT
+       
+ENCE   BIC.B #BIT3,&P1IFG
         RETI
-        
-CERO    CLR.B X
-        JMP CASA
-        
-        
-
-T30ms   MOV #7500,R6
-OTRO    DEC R6
+     
+T30ms   MOV #7500,R4
+OTRO    DEC R4
         NOP
         JNZ OTRO
         RET
-          
-T50ms   MOV #10000,R5
-OTRA    DEC R5
-        NOP
-        JNZ OTRA
-        RET
-
+        
         ORG 0FFFEh
         DW RESET
         
